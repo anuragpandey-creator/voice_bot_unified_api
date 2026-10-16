@@ -1,0 +1,63 @@
+{
+  "mode": "flow",
+  "tools": [],
+  "agent_id": "agent_cf6b558b",
+  "built_at": "2026-08-06T18:57:39.355439",
+  "language": "english",
+  "agent_name": "user_verification_agent",
+  "swap_rules": {},
+  "personality": null,
+  "system_prompt": "you are a helpful assistant, who verifies the customers identitiy",
+  "response_engine": {
+    "type": "conversation-flow",
+    "version": 0
+  },
+  "conversationFlow": {
+    "nodes": [
+      {
+        "id": "node_58afad37",
+        "name": "Greeting",
+        "type": "conversation",
+        "edges": [],
+        "is_global": false,
+        "max_turns": 3,
+        "node_tools": [],
+        "instruction": {
+          "text": "Greet the customer nicely",
+          "type": "prompt"
+        },
+        "start_speaker": "agent",
+        "static_message": "Hello {customerName}, I am here to verify your identity.",
+        "variables_needed": [
+          "customerName"
+        ]
+      },
+      {
+        "id": "node_6d045013",
+        "name": "Greeting",
+        "type": "conversation",
+        "edges": [],
+        "is_global": false,
+        "max_turns": 3,
+        "node_tools": [
+          "verify_customer"
+        ],
+        "instruction": {
+          "text": "Greet the customer nicely",
+          "type": "prompt"
+        },
+        "start_speaker": "agent",
+        "static_message": "Hello {customerName}, I am here to verify your identity.",
+        "variables_needed": [
+          "customerName"
+        ]
+      }
+    ],
+    "global_prompt": "you are a helpful assistant, who verifies the customers identitiy",
+    "start_node_id": "node_58afad37",
+    "start_speaker": "agent",
+    "global_node_ids": [],
+    "knowledge_base_ids": []
+  },
+  "last_modification_timestamp": 1786022859355
+}

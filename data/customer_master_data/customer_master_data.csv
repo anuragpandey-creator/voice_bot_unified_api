@@ -1,0 +1,10 @@
+customer_id,mobile,name,dob,gender,city,occupation,annual_income,risk_profile,preferred_language,kyc_status
+CUST1001,9876543210,Anurag,04/12/1968,Male,Jaipur,Salaried - Banking,2777000,Moderate,Hindi,VERIFIED
+CUST1002,9876543211,Pranil,07/09/1961,Male,Jaipur,Teacher/Academic,1225000,Moderate,Telugu,VERIFIED
+CUST1003,9876543212,Niraj,04/06/1973,Male,Delhi,Teacher/Academic,706000,Moderate,Kannada,PENDING
+CUST1004,9876543213,Riya,18/02/1984,Female,Hyderabad,Retired,2894000,Moderate,Tamil,REJECTED
+CUST1005,9876543214,Lohith,13/02/1974,Male,Hyderabad,Freelancer,2966000,Moderate,Marathi,VERIFIED
+CUST1006,9876543215,Tejas,20/02/2001,Female,Bangalore,Consultant,3358000,Low,Marathi,VERIFIED
+CUST1007,9876543216,Aman,08/01/1980,Female,Mumbai,Doctor/Healthcare,1983000,Moderate,English,VERIFIED
+CUST1008,9876543217,Prasant,09/03/1989,Female,Bangalore,Self-Employed,3425000,High,Telugu,REJECTED
+CUST1009,9876543218,Rahul,16/09/1968,Female,Delhi,Salaried - IT,760000,Low,Marathi,REJECTED

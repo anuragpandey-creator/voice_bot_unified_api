@@ -1,0 +1,11 @@
+[
+  {
+    "subflow_id": "subflow_verification",
+    "name": "Identity Verification",
+    "description": "Reusable verification flow — greet, ask DOB, confirm",
+    "nodes": ["greeting_01", "verification_01"],
+    "entry_node": "greeting_01",
+    "exit_node": "verification_01",
+    "created_at": "2026-07-27T10:00:00"
+  }
+]

@@ -1,0 +1,188 @@
+[
+  {
+    "tool_id": "cbs_lookup",
+    "name": "CBS Customer Lookup",
+    "description": "Fetch full customer profile from CBS (loans, accounts, transactions)",
+    "type": "api_call",
+    "method": "GET",
+    "endpoint": "/api/cbs/summary/{MobileNumber}",
+    "params": {},
+    "response_mapping": {
+      "customer": {
+        "name": "{CustomerName}",
+        "customer_id": "{CustomerId}",
+        "mobile": "{MobileNumber}"
+      },
+      "loans": [
+        {
+          "emi": "{EMIAmount}",
+          "due_date": "{DueDate}",
+          "dpd": "{DPD}",
+          "outstanding": "{OutstandingAmount}",
+          "principal": "{OutstandingPrincipal}",
+          "remaining_emis": "{RemainingEMIs}"
+        }
+      ],
+      "total_overdue": "{TotalOverdue}"
+    },
+    "created_at": "2026-07-24T10:00:00"
+  },
+  {
+    "tool_id": "verify_customer",
+    "name": "Verify Customer Identity",
+    "description": "Verify customer by Date of Birth",
+    "type": "api_call",
+    "method": "POST",
+    "endpoint": "/api/services/verify",
+    "params": {
+      "customer_id": "{CustomerId}",
+      "dob": "{DOB}"
+    },
+    "response_mapping": {
+      "verified": "{IsVerified}"
+    },
+    "created_at": "2026-07-24T10:00:00"
+  },
+  {
+    "tool_id": "create_ptp",
+    "name": "Create Promise to Pay",
+    "description": "Record a payment commitment from the customer",
+    "type": "api_call",
+    "method": "POST",
+    "endpoint": "/api/services/ptp/create",
+    "params": {
+      "customer_id": "{CustomerId}",
+      "ptp_date": "{PTPDate}",
+      "ptp_amount": "{PTPAmount}",
+      "mobile": "{MobileNumber}"
+    },
+    "response_mapping": {
+      "ptp_id": "{PTPId}",
+      "status": "{PTPStatus}"
+    },
+    "created_at": "2026-07-24T10:00:00"
+  },
+  {
+    "tool_id": "send_sms",
+    "name": "Send SMS Notification",
+    "description": "Send SMS via KnightFintech external API to customer mobile",
+    "type": "api_call",
+    "method": "POST",
+    "endpoint": "https://demo-gen-api.knightfintech.com/api/SMS",
+    "params": {
+      "recipientNumber": "91{MobileNumber}",
+      "messageText": "Your EMI of Rs.{EMIAmount} is overdue. Please pay by {DueDate}. Total outstanding: Rs.{OutstandingAmount}",
+      "otpFlag": "0",
+      "clientIP": "system",
+      "LeadId": "{CustomerId}",
+      "TemplateId": "68ac3096967edf3a0b5b4dc8",
+      "ShortUrl": "1",
+      "Receipients": "{\"var1\":\"{EMIAmount}\"}"
+    },
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "response_mapping": {
+      "status": "{SMSStatus}",
+      "messageId": "{SMSId}"
+    },
+    "created_at": "2026-07-24T10:00:00"
+  },
+  {
+    "tool_id": "pan_verification",
+    "name": "PAN Verification",
+    "description": "Verify PAN details (full name, father's name, DOB, PAN number) via GetPanComprehensiveData",
+    "type": "api_call",
+    "method": "POST",
+    "endpoint": "https://greaves-kyc-api.knightfintech.com/api/GetPanComprehensiveData",
+    "params": {
+      "LeadId": "{LeadId}",
+      "ClientName": "{ClientName}",
+      "PanInputDetail": "[{\"LeadId\": {LeadId}, \"PanNumber\": \"{PanNumber}\", \"NameAsPerPan\": \"{ClientName}\", \"DateOfBirth\": \"{DateOfBirth}\", \"FatherName\": \"{FatherName}\", \"VendorName\": \"NSDL\"}]"
+    },
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "response_mapping": {
+      "success": "{PanApiSuccess}",
+      "Error": "{PanApiError}",
+      "Data": {
+        "pan": "{PanNumberVerified}",
+        "full_name": "{PanFullName}",
+        "status": "{PanStatus}",
+        "category": "{PanCategory}",
+        "remarks": "{PanRemarks}",
+        "panStatus": "{PanStatusCode}",
+        "aadhaarSeedStatus": "{AadhaarSeedStatus}",
+        "nameMatchStatus": "{PanNameMatchStatus}",
+        "dateOfBirthMatchStatus": "{PanDobMatchStatus}"
+      }
+    },
+    "created_at": "2026-08-10T00:00:00"
+  },
+  {
+    "tool_id": "aadhaar_verification",
+    "name": "Aadhaar Verification",
+    "description": "Initiate Aadhaar OTP verification for a customer via BasicAadhaarVerification",
+    "type": "api_call",
+    "method": "POST",
+    "endpoint": "https://greaves-kyc-api.knightfintech.com/api/BasicAadhaarVerification",
+    "params": {
+      "LeadId": "{LeadId}",
+      "AadhaarNumber": "{AadhaarNumber}",
+      "ApplicationId": "{ApplicationId}",
+      "UserId": "{UserId}",
+      "IsDigiLockerAadhaar": "false"
+    },
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "response_mapping": {
+      "AadhaarNumber": "{AadhaarNumberMasked}",
+      "Status": "{AadhaarOtpStatus}",
+      "Message": "{AadhaarOtpMessage}",
+      "TransactionId": "{AadhaarTransactionId}",
+      "Success": "{AadhaarOtpSuccess}",
+      "Error": "{AadhaarApiError}",
+      "ErrorResponse": "{AadhaarErrorResponse}"
+    },
+    "created_at": "2026-08-10T00:00:00"
+  },
+    {
+      "tool_id": "get_transactions",
+      "name": "Get Transaction History",
+      "description": "Fetch last 10 transactions for a customer account",
+      "type": "api_call",
+      "method": "GET",
+      "endpoint": "/api/cbs/transactions/{AccountNo}",
+      "params": {
+        "account_no": "{AccountNo}",
+        "limit": "10"
+      },
+      "response_mapping": {
+        "transactions": "{TransactionList}"
+      },
+      "created_at": "2026-07-24T10:00:00"
+    },
+    {
+      "tool_id": "query_knowledge_base",
+      "name": "Query Knowledge Base (External RAG)",
+      "description": "Query the external RAG service for product policies, FAQ, and document answers",
+      "type": "api_call",
+      "method": "POST",
+      "endpoint": "http://192.168.0.155:8200/api/rag/search",
+      "request_body": {
+        "query": "{UserMessage}",
+        "agent_id": "{AgentId?}"
+      },
+      "headers": {
+        "Content-Type": "application/json"
+      },
+      "response_body": {
+        "answer": "{RAGAnswer}",
+        "context": "{RAGContext}"
+      },
+      "x_execution_mode": "sync",
+      "created_at": "2026-10-12T12:00:00"
+    }
+]

@@ -1,0 +1,181 @@
+[
+  {
+    "node_id": "greeting_01",
+    "name": "Greeting",
+    "type": "conversation",
+    "prompt": "Greet the customer by name and introduce yourself as calling from {LenderName} regarding their loan account. Ask if you are speaking with the right person.",
+    "static_message": "Hello {CustomerName}, I am calling from {LenderName} regarding your loan account. Am I speaking with {CustomerName}?",
+    "variables_needed": ["CustomerName", "LenderName"],
+    "tools": [],
+    "is_global": false,
+    "max_turns": 2,
+    "transitions": [
+      {
+        "to_node": "verification_01",
+        "condition": "Customer confirms they are the right person",
+        "keywords": ["yes", "speaking", "haan", "haan ji", "myself", "yes please", "ji haan", "yes i am"]
+      },
+      {
+        "to_node": "closing_01",
+        "condition": "Customer denies identity or says wrong number or says no",
+        "keywords": ["no", "wrong number", "wrong person", "not me", "galat number", "nahi", "no its not"]
+      }
+    ],
+    "created_at": "2026-07-27T10:00:00"
+  },
+  {
+    "node_id": "verification_01",
+    "name": "Customer Verification",
+    "type": "conversation",
+    "prompt": "Ask the customer to confirm their Date of Birth for security verification. If they provide any date or number, consider them verified and move forward.",
+    "static_message": "For security purposes, could you please confirm your Date of Birth?",
+    "variables_needed": ["DOB"],
+    "tools": ["verify_customer"],
+    "is_global": false,
+    "max_turns": 3,
+    "transitions": [
+      {
+        "to_node": "loan_reminder_01",
+        "condition": "Customer provides their date of birth or any verification information like a date or number",
+        "keywords": []
+      }
+    ],
+    "created_at": "2026-07-27T10:00:00"
+  },
+  {
+    "node_id": "loan_reminder_01",
+    "name": "Loan Reminder",
+    "type": "conversation",
+    "prompt": "Inform the customer about their overdue EMI. State the EMI amount, due date, days past due, and total outstanding. Ask if they can make the payment today.",
+    "static_message": "Your EMI of Rs.{EMIAmount} was due on {DueDate} and is overdue by {DPD} days. Your total outstanding is Rs.{OutstandingAmount}. Would you be able to make the payment today?",
+    "variables_needed": ["EMIAmount", "DueDate", "DPD", "OutstandingAmount"],
+    "tools": [],
+    "is_global": false,
+    "max_turns": 2,
+    "transitions": [
+      {
+        "to_node": "payment_commitment_01",
+        "condition": "Customer agrees to pay today or mentions a specific date when they will pay",
+        "keywords": ["i will pay today", "paying now", "let me pay", "i will pay", "will pay tomorrow", "pay next week"]
+      },
+      {
+        "to_node": "payment_discussion_01",
+        "condition": "Customer says they cannot pay or gives any reason for not paying right now",
+        "keywords": ["no", "not today", "can't pay", "nahi", "not possible", "no money", "dont want to pay", "i dont want", "not right now", "lost my job", "dont have money", "no actually"]
+      }
+    ],
+    "created_at": "2026-07-27T10:00:00"
+  },
+  {
+    "node_id": "payment_discussion_01",
+    "name": "Payment Discussion",
+    "type": "conversation",
+    "prompt": "The customer has said they cannot pay. Show empathy for their situation. Then ask WHEN they expect to be able to make the payment. If they already mentioned a reason (like job loss, salary delay), acknowledge it and ask about their expected timeline. Do NOT re-ask the reason if they already provided it.",
+    "static_message": null,
+    "variables_needed": [],
+    "tools": [],
+    "is_global": false,
+    "max_turns": 8,
+    "transitions": [
+      {
+        "to_node": "payment_commitment_01",
+        "condition": "Customer mentions a specific future date or time period when they will pay",
+        "keywords": ["next month", "next week", "after salary", "by monday", "will pay next", "i will pay", "tuesday", "tomorrow", "end of month", "after 15th", "next emi", "after 3 month", "after three month", "after two month"]
+      },
+      {
+        "to_node": "closing_01",
+        "condition": "Customer explicitly says they will NEVER pay or demands to stop calling permanently",
+        "keywords": ["stop calling me", "never paying", "refuse to pay", "i will never pay", "dont call again", "legal notice"]
+      }
+    ],
+    "created_at": "2026-07-27T10:00:00"
+  },
+  {
+    "node_id": "payment_commitment_01",
+    "name": "Payment Commitment",
+    "type": "conversation",
+    "prompt": "The customer has indicated when they can pay. Confirm the specific payment date and amount with them. Ask them to commit clearly. If they say the full amount is not possible, ask what partial amount they can pay.",
+    "static_message": "Would you be able to make the payment of Rs.{OutstandingAmount} by that date?",
+    "variables_needed": ["OutstandingAmount", "PTPDate", "PTPAmount"],
+    "tools": ["create_ptp"],
+    "is_global": false,
+    "max_turns": 4,
+    "transitions": [
+      {
+        "to_node": "confirmation_01",
+        "condition": "Customer confirms they will definitely pay by the mentioned date",
+        "keywords": ["yes sure", "confirmed", "yes i will", "done", "pakka", "sure", "haan karunga", "haan"]
+      },
+      {
+        "to_node": "payment_discussion_01",
+        "condition": "Customer says they cannot pay that amount or are not sure",
+        "keywords": ["not possible", "not sure", "maybe", "cant promise", "dont know", "too much", "cant pay that much"]
+      }
+    ],
+    "created_at": "2026-07-27T10:00:00"
+  },
+  {
+    "node_id": "confirmation_01",
+    "name": "PTP Confirmation",
+    "type": "conversation",
+    "prompt": "The payment commitment has been recorded. Thank the customer and inform them they will receive an SMS confirmation.",
+    "static_message": "Thank you. Your payment commitment has been recorded successfully. You will receive an SMS confirmation shortly.",
+    "variables_needed": [],
+    "tools": ["send_sms"],
+    "is_global": false,
+    "max_turns": 1,
+    "transitions": [
+      {
+        "to_node": "closing_01",
+        "condition": "Customer acknowledges or says anything after confirmation",
+        "keywords": ["ok", "thanks", "thank you", "okay", "alright", "theek hai", "bye", "good", "hmm"]
+      }
+    ],
+    "created_at": "2026-07-27T10:00:00"
+  },
+  {
+    "node_id": "closing_01",
+    "name": "Closing",
+    "type": "conversation",
+    "prompt": "Thank the customer for their time and close the conversation professionally. Say goodbye.",
+    "static_message": "Thank you for your time. Have a wonderful day. Goodbye.",
+    "variables_needed": [],
+    "tools": [],
+    "is_global": false,
+    "max_turns": 0,
+    "transitions": [
+      {
+        "to_node": "__END__",
+        "condition": "Call is done after closing message",
+        "keywords": []
+      }
+    ],
+    "created_at": "2026-07-27T10:00:00"
+  },
+  {
+    "node_id": "out_of_scope_01",
+    "name": "Out of Scope Handler",
+    "type": "conversation",
+    "prompt": "The customer asked something outside your expertise. Politely decline and offer to forward to another agent.",
+    "static_message": "I am not an expert in this. Let me forward your query to another agent who can help you better.",
+    "variables_needed": [],
+    "tools": [],
+    "is_global": true,
+    "max_turns": 1,
+    "transitions": [],
+    "created_at": "2026-07-27T10:00:00"
+  },
+  {
+    "node_id": "escalation_01",
+    "name": "Escalation",
+    "type": "conversation",
+    "prompt": "The customer wants to speak with a human agent or manager. Acknowledge their request and inform them you will transfer.",
+    "static_message": "I understand. Let me connect you with a senior agent who can assist you further.",
+    "variables_needed": [],
+    "tools": [],
+    "is_global": true,
+    "max_turns": 1,
+    "transitions": [],
+    "created_at": "2026-07-27T10:00:00"
+  }
+]
