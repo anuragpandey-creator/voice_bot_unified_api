@@ -43,10 +43,10 @@ Bot Audio Response (Speaker)
 Run `main:app` directly using the `uvicorn` command with your desired port:
 ```bash
 # Example with port 8000 (or any port of your choice):
-uvicorn main:app --host 0.0.0.0 --port 8000
+uvicorn main:app --port 1224
 
 # With hot-reload during development:
-uvicorn main:app --host 0.0.0.0 --port 8000 --reload
+uvicorn main:app  --port 1224 --reload
 ```
 * **Interactive API Docs (Swagger)**: http://localhost:<YOUR_PORT>/docs
 * **Health Check**: http://localhost:<YOUR_PORT>/health
